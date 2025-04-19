@@ -26,6 +26,8 @@ class LLMInterface:
             if context:
                 messages = build_context(context=context, message_history=messages)
 
+            # print('!!!!', messages)
+
             # Run ollama.chat in a thread pool since it's blocking
             loop = asyncio.get_event_loop()
             response = await loop.run_in_executor(None, lambda: ollama.chat(
@@ -45,8 +47,9 @@ class LLMInterface:
 
 
 def build_context(context: dict, message_history: list) -> list:
-    """Build context for LLM"""
-    system_prompt = """You are a helpful planning assistant. You help manage tasks and deadlines.
+    # """Build context for LLM"""
+    system_prompt = """You are a helpful planning assistant. You help manage tasks and deadlines. 
+    There is information from the system about the current date, user study schedule, and daily plans written in text files.
     Current date: {current_date}
     **Schedule:**
     {schedule}

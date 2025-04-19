@@ -121,7 +121,7 @@ class ChatFrame(ttk.Frame):
         self.history.configure(state='normal')
         prefix = "You: " if from_user else "Assistant: "
         tag = 'user' if from_user else 'assistant'
-        self.history.insert('end', f"{prefix}{message}", tag)
+        self.history.insert('end', f"{prefix}{message}\n", tag)
 
         self.history.see('end')
         self.history.configure(state='disabled')
@@ -173,7 +173,7 @@ class ChatFrame(ttk.Frame):
             self.messages.append({'role': 'assistant', 'content': response})
             
         asyncio.run(process())
-          
+
     # def send_message(self):
     #     message = self.input.get().strip()
     #     if not message:
