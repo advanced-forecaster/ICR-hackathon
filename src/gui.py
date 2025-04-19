@@ -102,7 +102,7 @@ class ScheduleFrame(ttk.Frame):
         
     def _load_schedule(self):
         try:
-            with open("data/schedule.txt", "r") as f:
+            with open("data/schedule.txt", "r", encoding='utf-8') as f:
                 return f.read().strip().split("\n")
         except FileNotFoundError:
             return ["No schedule found"]
@@ -191,13 +191,25 @@ class ChatFrame(ttk.Frame):
         days_data = "data/days/"
         days_content = ""
         try:
-            for file in os.listdir(days_data):
-                if file.endswith(".txt"):
-                    with open(os.path.join(days_data, file), "r") as f:
-                        days_content += f"\n=== {file} ===\n"
-                        days_content += f.read()
+            files = [f for f in os.listdir(days_data) if f.endswith(".txt")]
+            files.sort() # Sort files alphabetically, which works for date-based filenames
+            for date_filename in files:
+                with open(os.path.join(days_data, date_filename), "r") as f:
+                    date_str = date_filename.replace('.txt', '')
+                    date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+                    days_content += f"\n=== {date_obj.strftime('%A, %B %d, %Y')} ===\n"
+                    days_diff = (datetime.today() - date_obj).days
+                    if days_diff == 0:
+                        days_content += " (Today)\n"
+                    elif days_diff > 0:
+                        days_content += f" ({days_diff} days ago)\n"
+                    else:
+                        days_content += f" (in {-days_diff} days)\n"
+                    days_content += f.read()
         except:
             pass
+
+        # print(days_content)
         return days_content
 
 
