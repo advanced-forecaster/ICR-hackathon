@@ -53,7 +53,7 @@ class ScheduleFrame(ttk.Frame):
         
     def _load_schedule(self):
         try:
-            with open("data/schedule.txt", "r") as f:
+            with open("data/schedule.txt", "r", encoding='utf-8') as f:
                 return f.read().strip().split("\n")
         except FileNotFoundError:
             return ["No schedule found"]
