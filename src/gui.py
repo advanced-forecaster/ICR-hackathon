@@ -137,11 +137,14 @@ class ChatFrame(ttk.Frame):
         days_data = "data/days/"
         days_content = ""
         try:
-            for file in os.listdir(days_data):
-                if file.endswith(".txt"):
-                    with open(os.path.join(days_data, file), "r") as f:
-                        days_content += f"\n=== {file} ===\n"
-                        days_content += f.read()
+            files = [f for f in os.listdir(days_data) if f.endswith(".txt")]
+            files.sort() # Sort files alphabetically, which works for date-based filenames
+            for date_filename in files:
+                with open(os.path.join(days_data, date_filename), "r") as f:
+                    date_str = date_filename.replace('.txt', '')
+                    date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+                    days_content += f"\n=== {date_obj.strftime('%A, %B %d, %Y')} ===\n"
+                    days_content += f.read()
         except:
             pass
         return days_content
