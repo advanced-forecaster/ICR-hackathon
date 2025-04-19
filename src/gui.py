@@ -163,17 +163,19 @@ class ChatFrame(ttk.Frame):
         # Process in background
         async def process():
             # Build context from schedule and daily files
-            context = f"""Current date: {self.current_date}
+            context = f"""Please act as an AI planner.
+Today's date is {self.current_date}.
+Use this date as the primary reference point for all time-based reasoning and when referring to "today".
 
-Schedule:
+Here is the user's schedule for the future:
 {self.read_schedule()}
 
-Daily plans:
+Here are the user's daily plans for the future:
 {self.read_daily_files()}
 
 User question: {message}
 
-Based on the schedule and daily plans above, please help the user."""
+Based on the schedule and daily plans provided, and critically using today's date ({self.current_date}), please help the user with their question."""
 
             response = await self.llm.chat(context)
             
