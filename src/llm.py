@@ -15,20 +15,22 @@ class LLMInterface:
         self.model = model_name
         logger.info(f"Initialized LLM interface with model: {model_name}")
 
-    async def chat(self, message: str, context: list = None) -> str:
+    async def chat(self, messages: list, context: dict = None) -> str:
         """Send message to LLM and get response"""
         try:
+            message = messages[-1]['content']
             if len(message) > 1000: message_log = f"Sending chat request with message:\n{message[:500]}\n...\n...\n{message[-500:]}"
             else: message_log = f"Sending chat request with message:\n{message}"
             logger.info(message_log)
+
+            if context:
+                messages = build_context(context=context, message_history=messages)
+
             # Run ollama.chat in a thread pool since it's blocking
             loop = asyncio.get_event_loop()
             response = await loop.run_in_executor(None, lambda: ollama.chat(
                 model=self.model,
-                messages=[
-                    {'role': 'system', 'content': 'You are a helpful planning assistant. You help manage tasks and deadlines.'},
-                    {'role': 'user', 'content': message}
-                ]
+                messages=messages
             ))
             response_content = response['message']['content']
             if len(response_content) > 1000: response_log = f"LLM response:\n{response_content[:500]}\n...\n...\n{response_content[-500:]}"
@@ -40,13 +42,18 @@ class LLMInterface:
             logger.error(error_msg)
             return error_msg
 
-#     async def process_planning_request(self, message: str, current_tasks: list) -> str:
-#         """Process planning-specific requests"""
-#         context = f"""Current tasks and deadlines:
-# {chr(10).join(current_tasks)}
 
-# User request: {message}
 
-# Please help manage these tasks and deadlines."""
+def build_context(context: dict, message_history: list) -> list:
+    """Build context for LLM"""
+    system_prompt = """You are a helpful planning assistant. You help manage tasks and deadlines.
+    Current date: {current_date}
+    **Schedule:**
+    {schedule}
+    **Daily plans:**
+    {daily_plans}
+    """.format(current_date=context['current_date'], schedule=context['schedule'], daily_plans=context['daily_plans'])
 
-#         return await self.chat(context) 
+    messages = [{'role': 'system', 'content': system_prompt}]
+    messages.extend(message_history)
+    return messages

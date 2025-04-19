@@ -121,10 +121,7 @@ class ChatFrame(ttk.Frame):
         self.history.configure(state='normal')
         prefix = "You: " if from_user else "Assistant: "
         tag = 'user' if from_user else 'assistant'
-
-        self.history.insert('end', f"\n{prefix}", tag)
-        # Insert message without color
-        self.history.insert('end', message)
+        self.history.insert('end', f"{prefix}{message}", tag)
 
         self.history.see('end')
         self.history.configure(state='disabled')
@@ -148,45 +145,63 @@ class ChatFrame(ttk.Frame):
         except:
             pass
         return days_content
-        
+
+
     def send_message(self):
         message = self.input.get().strip()
         if not message:
             return
             
+        # Clear input first
         self.input.delete(0, 'end')
-        self.add_message(message)
         
-        # Show thinking message
-        self.add_message("Thinking...", from_user=False)
+        # Add user message to display and history
+        self.add_message(message, from_user=True)
+        self.messages.append({'role': 'user', 'content': message})
         
         # Process in background
         async def process():
-            # Build context from schedule and daily files
-            context = f"""Please act as an AI planner.
-Today's date is {self.current_date}.
-Use this date as the primary reference point for all time-based reasoning and when referring to "today".
-
-Here is the user's schedule for the future:
-{self.read_schedule()}
-
-Here are the user's daily plans for the future:
-{self.read_daily_files()}
-
-User question: {message}
-
-Based on the schedule and daily plans provided, and critically using today's date ({self.current_date}), please help the user with their question."""
-
-            response = await self.llm.chat(context)
+            context = {
+                'current_date': self.current_date,
+                'schedule': self.read_schedule(),
+                'daily_plans': self.read_daily_files()
+            }
+            response = await self.llm.chat(messages=self.messages, context=context)
             
-            # Remove thinking message
-            self.history.configure(state='normal')
-            self.history.delete("end-2c linestart", "end")
-            self.history.configure(state='disabled')
-            
+            # Add assistant response to display and history
             self.add_message(response, from_user=False)
+            self.messages.append({'role': 'assistant', 'content': response})
             
         asyncio.run(process())
+          
+    # def send_message(self):
+    #     message = self.input.get().strip()
+    #     if not message:
+    #         return
+            
+    #     self.input.delete(0, 'end')
+    #     self.add_message(message)
+        
+    #     self.messages.append({'role': 'user', 'content': message})
+    #     # Process in background
+    #     async def process():
+    #         # Build context from schedule and daily files
+    #         context = {
+    #             'current_date': self.current_date,
+    #             'schedule': self.read_schedule(),
+    #             'daily_plans': self.read_daily_files()
+    #         }
+    #         response = await self.llm.chat(context=context, messages=self.messages)
+            
+    #         # Remove thinking message
+    #         self.history.configure(state='normal')
+    #         self.history.delete("end-2c linestart", "end")
+    #         self.history.configure(state='disabled')
+            
+    #         self.add_message(response, from_user=False)
+    #         self.messages.append({'role': 'assistant', 'content': response})
+            
+    #     asyncio.run(process())
 
 class PlannerGUI:
     def __init__(self):
