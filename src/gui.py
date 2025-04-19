@@ -10,6 +10,48 @@ from concurrent.futures import ThreadPoolExecutor
 import os
 
 
+class DayEditDialog:
+    def __init__(self, parent, date_str):
+        self.top = tk.Toplevel(parent)
+        self.date_str = date_str
+        self.top.title(f"Edit Day Plan - {date_str}")
+        
+        # Create and pack widgets
+        frame = ttk.Frame(self.top, padding="10")
+        frame.pack(fill='both', expand=True)
+        
+        # Text widget for editing
+        self.text = tk.Text(frame, wrap='word', width=50, height=20)
+        self.text.pack(fill='both', expand=True, pady=(0, 10))
+        
+        # Load existing content if any
+        self.load_content()
+        
+        # Buttons
+        btn_frame = ttk.Frame(frame)
+        btn_frame.pack(fill='x')
+        
+        ttk.Button(btn_frame, text="Save", command=self.save).pack(side='right', padx=5)
+        ttk.Button(btn_frame, text="Cancel", command=self.top.destroy).pack(side='right')
+        
+        # Make dialog modal
+        self.top.transient(parent)
+        self.top.grab_set()
+        
+    def load_content(self):
+        try:
+            with open(f"data/days/{self.date_str}.txt", "r") as f:
+                content = f.read()
+                self.text.insert('1.0', content)
+        except FileNotFoundError:
+            pass
+            
+    def save(self):
+        content = self.text.get('1.0', 'end-1c')
+        os.makedirs("data/days", exist_ok=True)
+        with open(f"data/days/{self.date_str}.txt", "w") as f:
+            f.write(content)
+        self.top.destroy()
 
 
 class CalendarFrame(ttk.Frame):
@@ -41,8 +83,15 @@ class CalendarFrame(ttk.Frame):
             for day_num, day in enumerate(week):
                 if day != 0:
                     style = 'CalCurrent.TLabel' if day == self.today.day else 'Cal.TLabel'
-                    lbl = ttk.Label(cal_frame, text=str(day), style=style)
+                    lbl = ttk.Label(cal_frame, text=str(day), style=style, cursor="hand2")
                     lbl.grid(row=week_num + 1, column=day_num, padx=2, pady=2)
+                    
+                    # Bind click event
+                    date_str = f"{self.today.year}-{self.today.month:02d}-{day:02d}"
+                    lbl.bind('<Button-1>', lambda e, d=date_str: self.on_date_click(d))
+
+    def on_date_click(self, date_str):
+        dialog = DayEditDialog(self, date_str)
 
 
 class ScheduleFrame(ttk.Frame):
