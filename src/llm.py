@@ -47,7 +47,7 @@ class LLMInterface:
 def build_context(context: dict, message_history: list) -> list:
     """Build context for LLM"""
     system_prompt = """You are a helpful planning assistant. You help manage tasks and deadlines.
-    Current date: {current_date}
+    **Current date (today):** {current_date}
     **Schedule:**
     {schedule}
     **Daily plans:**
