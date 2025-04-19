@@ -1,8 +1,5 @@
-days/*
-schedule.txt
 __pycache__/
 *.py[cod]
 *$py.class
-logs/
 *.txt
 *.ipynb
