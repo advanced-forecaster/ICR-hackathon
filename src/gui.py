@@ -49,7 +49,7 @@ class ScheduleFrame(ttk.Frame):
         
     def _load_schedule(self):
         try:
-            with open("schedule.txt", "r") as f:
+            with open("data/schedule.txt", "r") as f:
                 return f.read().strip().split("\n")
         except FileNotFoundError:
             return ["No schedule found"]
@@ -124,17 +124,18 @@ class ChatFrame(ttk.Frame):
         
     def read_schedule(self):
         try:
-            with open("schedule.txt", "r") as f:
+            with open("data/schedule.txt", "r") as f:
                 return f.read()
         except:
             return ""
             
     def read_daily_files(self):
+        days_data = "data/days/"
         days_content = ""
         try:
-            for file in os.listdir("days"):
+            for file in os.listdir(days_data):
                 if file.endswith(".txt"):
-                    with open(os.path.join("days", file), "r") as f:
+                    with open(os.path.join(days_data, file), "r") as f:
                         days_content += f"\n=== {file} ===\n"
                         days_content += f.read()
         except:
