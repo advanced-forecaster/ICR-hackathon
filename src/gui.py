@@ -149,9 +149,18 @@ class ChatFrame(ttk.Frame):
                     date_str = date_filename.replace('.txt', '')
                     date_obj = datetime.strptime(date_str, '%Y-%m-%d')
                     days_content += f"\n=== {date_obj.strftime('%A, %B %d, %Y')} ===\n"
+                    days_diff = (datetime.today() - date_obj).days
+                    if days_diff == 0:
+                        days_content += " (Today)\n"
+                    elif days_diff > 0:
+                        days_content += f" ({days_diff} days ago)\n"
+                    else:
+                        days_content += f" (in {-days_diff} days)\n"
                     days_content += f.read()
         except:
             pass
+
+        # print(days_content)
         return days_content
 
 
