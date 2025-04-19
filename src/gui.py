@@ -96,6 +96,8 @@ class ChatFrame(ttk.Frame):
             font=('Arial', 10),
             height=20
         )
+        self.history.tag_configure('user', foreground='blue')
+        self.history.tag_configure('assistant', foreground='green')
         self.history.pack(fill='both', expand=True, padx=5, pady=5)
         
         # Input area
@@ -118,7 +120,12 @@ class ChatFrame(ttk.Frame):
     def add_message(self, message, from_user=True):
         self.history.configure(state='normal')
         prefix = "You: " if from_user else "Assistant: "
-        self.history.insert('end', f"\n{prefix}{message}")
+        tag = 'user' if from_user else 'assistant'
+
+        self.history.insert('end', f"\n{prefix}", tag)
+        # Insert message without color
+        self.history.insert('end', message)
+
         self.history.see('end')
         self.history.configure(state='disabled')
         

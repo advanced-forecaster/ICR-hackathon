@@ -23,7 +23,7 @@ Keep it simple and in plain text format without any special formatting, just pla
     content = get_llm_response(prompt)
     
     # Ensure days directory exists
-    days_dir = Path("days")
+    days_dir = Path("data/days")
     days_dir.mkdir(exist_ok=True)
     
     # Write daily entry
@@ -40,7 +40,7 @@ Keep it in plain text format with just days of the week and entries."""
     content = get_llm_response(prompt)
     
     # Write schedule
-    with open("schedule.txt", "w") as f:
+    with open("data/schedule.txt", "w") as f:
         f.write(content)
 
 def main():
