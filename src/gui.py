@@ -9,6 +9,9 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import os
 
+
+
+
 class CalendarFrame(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -40,6 +43,7 @@ class CalendarFrame(ttk.Frame):
                     style = 'CalCurrent.TLabel' if day == self.today.day else 'Cal.TLabel'
                     lbl = ttk.Label(cal_frame, text=str(day), style=style)
                     lbl.grid(row=week_num + 1, column=day_num, padx=2, pady=2)
+
 
 class ScheduleFrame(ttk.Frame):
     def __init__(self, parent):
@@ -78,6 +82,7 @@ class ScheduleFrame(ttk.Frame):
             
         # Make text widget read-only
         text_widget.configure(state='disabled')
+
 
 class ChatFrame(ttk.Frame):
     def __init__(self, parent, llm):
@@ -174,34 +179,6 @@ class ChatFrame(ttk.Frame):
             
         asyncio.run(process())
 
-    # def send_message(self):
-    #     message = self.input.get().strip()
-    #     if not message:
-    #         return
-            
-    #     self.input.delete(0, 'end')
-    #     self.add_message(message)
-        
-    #     self.messages.append({'role': 'user', 'content': message})
-    #     # Process in background
-    #     async def process():
-    #         # Build context from schedule and daily files
-    #         context = {
-    #             'current_date': self.current_date,
-    #             'schedule': self.read_schedule(),
-    #             'daily_plans': self.read_daily_files()
-    #         }
-    #         response = await self.llm.chat(context=context, messages=self.messages)
-            
-    #         # Remove thinking message
-    #         self.history.configure(state='normal')
-    #         self.history.delete("end-2c linestart", "end")
-    #         self.history.configure(state='disabled')
-            
-    #         self.add_message(response, from_user=False)
-    #         self.messages.append({'role': 'assistant', 'content': response})
-            
-    #     asyncio.run(process())
 
 class PlannerGUI:
     def __init__(self):
@@ -246,6 +223,7 @@ class PlannerGUI:
     def run(self):
         self.root.mainloop()
 
+
 def main():
     print("Starting application...")
     # Initialize and run GUI
@@ -253,6 +231,7 @@ def main():
     print("Created GUI...")
     app.run()
     print("Running main loop...")
+
 
 if __name__ == "__main__":
     main() 
