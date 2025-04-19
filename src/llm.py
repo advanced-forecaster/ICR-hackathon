@@ -50,7 +50,8 @@ def build_context(context: dict, message_history: list) -> list:
     # """Build context for LLM"""
     system_prompt = """You are a helpful planning assistant. You help manage tasks and deadlines. 
     There is information from the system about the current date, user study schedule, and daily plans written in text files.
-    Current date: {current_date}
+    **Current date:**
+    {current_date}
     **Schedule:**
     {schedule}
     **Daily plans:**
