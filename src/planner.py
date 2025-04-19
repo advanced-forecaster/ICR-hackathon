@@ -3,7 +3,7 @@ from datetime import datetime, date
 from typing import List, Dict
 
 class Planner:
-    def __init__(self, plans_dir: str = "plans"):
+    def __init__(self, plans_dir: str = "data/days/"):
         self.plans_dir = plans_dir
         self.ensure_dirs()
         
