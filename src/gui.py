@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import calendar
-from datetime import date
+from datetime import date, datetime
 from ttkthemes import ThemedTk
 from planner import Planner
 from llm import LLMInterface
@@ -83,7 +83,7 @@ class ChatFrame(ttk.Frame):
     def __init__(self, parent, llm):
         super().__init__(parent)
         self.llm = llm
-        self.current_date = "2025-04-20"  # You can set this as needed
+        self.current_date = datetime.today().strftime('%Y-%m-%d')  # You can set this as needed
         self.messages = []
         self._create_widgets()
         
