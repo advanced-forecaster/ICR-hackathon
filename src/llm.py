@@ -11,7 +11,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class LLMInterface:
-    def __init__(self, model_name="llama3.1:8b"):
+    def __init__(self, model_name="qwen2.5:32b"):
         self.model = model_name
         logger.info(f"Initialized LLM interface with model: {model_name}")
 
@@ -57,6 +57,11 @@ def build_context(context: dict, message_history: list) -> list:
     **Daily plans:**
     {daily_plans}
     """.format(current_date=context['current_date'], schedule=context['schedule'], daily_plans=context['daily_plans'])
+
+    # Tokenize system prompt to check length
+    # token_response = ollama.tokenize(model=self.model, prompt=system_prompt)
+    # token_count = len(token_response['tokens'])
+    # logger.info(f"System prompt token count: {token_count}")
 
     messages = [{'role': 'system', 'content': system_prompt}]
     messages.extend(message_history)
