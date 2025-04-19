@@ -21,13 +21,13 @@ class LLMInterface:
         except Exception as e:
             return f"Error connecting to Ollama: {str(e)}"
 
-    async def process_planning_request(self, message: str, current_tasks: list) -> str:
-        """Process planning-specific requests"""
-        context = f"""Current tasks and deadlines:
-{chr(10).join(current_tasks)}
+#     async def process_planning_request(self, message: str, current_tasks: list) -> str:
+#         """Process planning-specific requests"""
+#         context = f"""Current tasks and deadlines:
+# {chr(10).join(current_tasks)}
 
-User request: {message}
+# User request: {message}
 
-Please help manage these tasks and deadlines."""
-        
-        return await self.chat(context) 
+# Please help manage these tasks and deadlines."""
+
+#         return await self.chat(context) 
