@@ -7,3 +7,5 @@ data/
 # Logs
 logs/
 *.log
+node_modules/
+venv/
