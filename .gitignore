@@ -3,7 +3,7 @@ __pycache__/
 *$py.class
 *.txt
 *.ipynb
-data/
+# data/
 # Logs
 logs/
 *.log
