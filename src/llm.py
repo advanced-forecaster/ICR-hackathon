@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 cut_long_message = lambda message: message[:500] + "\n...\n...\n" + message[-500:] if len(message) > 1000 else message
 
 class LLMInterface:
-    def __init__(self, model_name="qwen2.5:32b"):
+    def __init__(self, model_name="qwen2.5:7b"):
         self.model = model_name
         logger.info(f"Initialized LLM interface with model: {model_name}")
 
@@ -46,15 +46,15 @@ class LLMInterface:
 
 def build_context(context: dict, message_history: list) -> list:
     # """Build context for LLM"""
-    system_prompt = """You are a helpful planning assistant. You help manage tasks and deadlines. 
-    There is information from the system about the current date, user study schedule, and daily plans written in text files.
-    **Current date:**
+    system_prompt = """Вы полезный помощник по планированию. Вы помогаете управлять задачами и сроками.
+    В системе есть информация о текущей дате, учебном расписании пользователя и ежедневных планах, записанных в текстовых файлах.
+    **Текущая дата:**
     {current_date}
-    **Schedule:**
+    **Расписание:**
     {schedule}
-    **Daily plans:**
+    **Ежедневные планы:**
     {daily_plans}
-    **Current date:**
+    **Текущая дата:**
     {current_date}
     """.format(current_date=context['current_date'], schedule=context['schedule'], daily_plans=context['daily_plans'])
 

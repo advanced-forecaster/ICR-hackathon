@@ -40,7 +40,7 @@ class DayEditDialog:
         
     def load_content(self):
         try:
-            with open(f"data/days/{self.date_str}.txt", "r") as f:
+            with open(f"data/days/{self.date_str}.txt", "r", encoding='utf-8') as f:
                 content = f.read()
                 self.text.insert('1.0', content)
         except FileNotFoundError:
@@ -49,7 +49,7 @@ class DayEditDialog:
     def save(self):
         content = self.text.get('1.0', 'end-1c')
         os.makedirs("data/days", exist_ok=True)
-        with open(f"data/days/{self.date_str}.txt", "w") as f:
+        with open(f"data/days/{self.date_str}.txt", "w", encoding='utf-8') as f:        
             f.write(content)
         self.top.destroy()
 
@@ -82,7 +82,16 @@ class CalendarFrame(ttk.Frame):
         for week_num, week in enumerate(cal):
             for day_num, day in enumerate(week):
                 if day != 0:
-                    style = 'CalCurrent.TLabel' if day == self.today.day else 'Cal.TLabel'
+                    date_str = f"{self.today.year}-{self.today.month:02d}-{day:02d}"
+                    has_file = os.path.exists(f"data/days/{date_str}.txt")
+                    
+                    if day == self.today.day:
+                        style = 'CalCurrent.TLabel'
+                    elif has_file:
+                        style = 'CalHasFile.TLabel' 
+                    else:
+                        style = 'Cal.TLabel'
+                        
                     lbl = ttk.Label(cal_frame, text=str(day), style=style, cursor="hand2")
                     lbl.grid(row=week_num + 1, column=day_num, padx=2, pady=2)
                     
@@ -182,7 +191,7 @@ class ChatFrame(ttk.Frame):
         
     def read_schedule(self):
         try:
-            with open("data/schedule.txt", "r") as f:
+            with open("data/schedule.txt", "r", encoding='utf-8') as f:
                 return f.read()
         except:
             return ""
@@ -194,7 +203,7 @@ class ChatFrame(ttk.Frame):
             files = [f for f in os.listdir(days_data) if f.endswith(".txt")]
             files.sort() # Sort files alphabetically, which works for date-based filenames
             for date_filename in files:
-                with open(os.path.join(days_data, date_filename), "r") as f:
+                with open(os.path.join(days_data, date_filename), "r", encoding='utf-8') as f:
                     date_str = date_filename.replace('.txt', '')
                     date_obj = datetime.strptime(date_str, '%Y-%m-%d')
                     days_content += f"\n=== {date_obj.strftime('%A, %B %d, %Y')} ===\n"
@@ -254,6 +263,7 @@ class PlannerGUI:
         # Configure styles
         style = ttk.Style()
         style.configure('CalCurrent.TLabel', foreground='blue', font=('Arial', 10, 'bold'))
+        style.configure('CalHasFile.TLabel', foreground='green', font=('Arial', 10, 'bold'))
         style.configure('Cal.TLabel', font=('Arial', 10))
         
         self._create_widgets()
