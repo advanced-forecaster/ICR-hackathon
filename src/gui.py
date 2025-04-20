@@ -82,7 +82,16 @@ class CalendarFrame(ttk.Frame):
         for week_num, week in enumerate(cal):
             for day_num, day in enumerate(week):
                 if day != 0:
-                    style = 'CalCurrent.TLabel' if day == self.today.day else 'Cal.TLabel'
+                    date_str = f"{self.today.year}-{self.today.month:02d}-{day:02d}"
+                    has_file = os.path.exists(f"data/days/{date_str}.txt")
+                    
+                    if day == self.today.day:
+                        style = 'CalCurrent.TLabel'
+                    elif has_file:
+                        style = 'CalHasFile.TLabel' 
+                    else:
+                        style = 'Cal.TLabel'
+                        
                     lbl = ttk.Label(cal_frame, text=str(day), style=style, cursor="hand2")
                     lbl.grid(row=week_num + 1, column=day_num, padx=2, pady=2)
                     
@@ -254,6 +263,7 @@ class PlannerGUI:
         # Configure styles
         style = ttk.Style()
         style.configure('CalCurrent.TLabel', foreground='blue', font=('Arial', 10, 'bold'))
+        style.configure('CalHasFile.TLabel', foreground='green', font=('Arial', 10, 'bold'))
         style.configure('Cal.TLabel', font=('Arial', 10))
         
         self._create_widgets()
